@@ -2,6 +2,7 @@ package rander
 
 import (
 	"github.com/Masterminds/sprig"
+	api "github.com/nonetheless/gorm-migrate/pkg"
 	"github.com/nonetheless/gorm-migrate/pkg/utils"
 	"gopkg.in/yaml.v2"
 	"io"
@@ -19,15 +20,24 @@ type VersionTemplate struct {
 	PackageName *string
 }
 
-type VersionTemplateContext struct {
-	wd          string
-	VersionTemps VersionTemplates
-	dirPath     string
-	PackageName string
-	newVersion  *VersionTemplate
+func (v *VersionTemplate) Printf(out api.MigrateOut){
+	tempVersion := v.PreVersion
+	if tempVersion == "" {
+		tempVersion = "            "
+	}
+	out.Infof(tempVersion + "   --------->     " + v.Version + "\n")
 }
 
-func (c *VersionTemplateContext) createTemplate(preVersion string) (error) {
+type VersionTemplateContext struct {
+	VersionTemps VersionTemplates
+	dirPath      string
+	PackageName  string
+	newVersion   *VersionTemplate
+	out          api.MigrateOut
+	preVersion   string
+}
+
+func (c *VersionTemplateContext) createTemplate() (error) {
 	version := utils.GeneratorX(12)
 	err := os.Mkdir(c.dirPath+"/"+version, os.ModePerm)
 	if err != nil {
@@ -35,7 +45,7 @@ func (c *VersionTemplateContext) createTemplate(preVersion string) (error) {
 	}
 	newVersion := VersionTemplate{
 		Version:     version,
-		PreVersion:  preVersion,
+		PreVersion:  c.preVersion,
 		PackageName: &c.PackageName,
 	}
 	data, err := yaml.Marshal(newVersion)
@@ -47,9 +57,13 @@ func (c *VersionTemplateContext) createTemplate(preVersion string) (error) {
 		return err
 	}
 	// create golang file
-	inputFile := c.wd + "/template/temp.gotmpl"
+	inputFile := "template/temp.gotmpl"
 	outputFile := c.dirPath + "/" + newVersion.Version + "/migrate.go"
-	t, err := template.New(filepath.Base(inputFile)).Funcs(sprig.TxtFuncMap()).ParseFiles(inputFile)
+	data, err = utils.AssetTemplate("template/temp.gotmpl")
+	if err != nil {
+		return err
+	}
+	t, err := template.New(filepath.Base(inputFile)).Funcs(sprig.TxtFuncMap()).Parse(string(data))
 	if err != nil {
 		return err
 	}
@@ -57,6 +71,7 @@ func (c *VersionTemplateContext) createTemplate(preVersion string) (error) {
 		err := t.Execute(writer, newVersion)
 		return err
 	})
+	c.out.Infof("create new version:" + newVersion.Version + "\n")
 	if err != nil {
 		return err
 	}
@@ -66,9 +81,13 @@ func (c *VersionTemplateContext) createTemplate(preVersion string) (error) {
 }
 
 func (c *VersionTemplateContext) createDoc() error {
-	inputFile := c.wd + "/template/doc.gotmpl"
+	inputFile := "template/doc.gotmpl"
 	outputFile := c.dirPath + "/doc.go"
-	t, err := template.New(filepath.Base(inputFile)).Funcs(sprig.TxtFuncMap()).ParseFiles(inputFile)
+	data, err := utils.AssetTemplate("template/doc.gotmpl")
+	if err != nil {
+		return err
+	}
+	t, err := template.New(filepath.Base(inputFile)).Funcs(sprig.TxtFuncMap()).Parse(string(data))
 	if err != nil {
 		return err
 	}
@@ -80,9 +99,13 @@ func (c *VersionTemplateContext) createDoc() error {
 }
 
 func (c *VersionTemplateContext) createParams() error {
-	inputFile := c.wd + "/template/param.gotmpl"
+	inputFile := "template/param.gotmpl"
 	outputFile := c.dirPath + "/param/param.go"
-	t, err := template.New(filepath.Base(inputFile)).Funcs(sprig.TxtFuncMap()).ParseFiles(inputFile)
+	data, err := utils.AssetTemplate("template/param.gotmpl")
+	if err != nil {
+		return err
+	}
+	t, err := template.New(filepath.Base(inputFile)).Funcs(sprig.TxtFuncMap()).Parse(string(data))
 	if err != nil {
 		return err
 	}
@@ -94,9 +117,13 @@ func (c *VersionTemplateContext) createParams() error {
 }
 
 func (c *VersionTemplateContext) createInit() error {
-	inputFile := c.wd + "/template/init.gotmpl"
+	inputFile := "template/init.gotmpl"
 	outputFile := c.dirPath + "/init.go"
-	t, err := template.New(filepath.Base(inputFile)).Funcs(sprig.TxtFuncMap()).ParseFiles(inputFile)
+	data, err := utils.AssetTemplate("template/init.gotmpl")
+	if err != nil {
+		return err
+	}
+	t, err := template.New(filepath.Base(inputFile)).Funcs(sprig.TxtFuncMap()).Parse(string(data))
 	if err != nil {
 		return err
 	}
@@ -104,28 +131,32 @@ func (c *VersionTemplateContext) createInit() error {
 		err := t.Execute(writer, c)
 		return err
 	})
+	c.out.Infof("Migration version list:\n")
+	printVersion(c)
 	return err
 }
 
-func RanderTemplate(path, packageName string) error {
-	dir, err := utils.ReadOrCreate(path)
-	if err != nil {
-		return err
+func printVersion(c *VersionTemplateContext) {
+	for _, version := range c.VersionTemps {
+		version.Printf(c.out)
 	}
+}
+
+func createRanderContext(dir []os.FileInfo, path, packageName string, out api.MigrateOut) (*VersionTemplateContext, error) {
 	versionMap := make(map[string]string)
 	for _, fi := range dir {
 		if fi.IsDir() {
-			if fi.Name() == "param"{
+			if fi.Name() == "param" {
 				continue
 			}
 			version, err := ioutil.ReadFile(path + "/" + fi.Name() + "/version.yaml")
 			if err != nil {
-				return err
+				return nil, err
 			}
 			versionYaml := VersionTemplate{}
 			err = yaml.Unmarshal(version, &versionYaml)
 			if err != nil {
-				return err
+				return nil, err
 			}
 			versionMap[versionYaml.PreVersion] = versionYaml.Version
 		}
@@ -144,22 +175,32 @@ func RanderTemplate(path, packageName string) error {
 			break
 		}
 	}
-	wd, err := os.Getwd()
-	if err != nil {
-		return  err
-	}
 	context := VersionTemplateContext{
-		wd:          wd,
-		VersionTemps:  versions,
-		dirPath:     path,
-		PackageName: packageName,
-		newVersion:  nil,
+		VersionTemps: versions,
+		dirPath:      path,
+		PackageName:  packageName,
+		newVersion:   nil,
+		out:          out,
+		preVersion:   pre,
 	}
-	err = context.createTemplate(pre)
+	return &context, nil
+
+}
+
+func RanderTemplate(path, packageName string, out api.MigrateOut) error {
+	dir, err := utils.ReadOrCreate(path)
+	if err != nil {
+		return err
+	}
+	context, err := createRanderContext(dir, path, packageName, out)
 	if err != nil {
 		return err
 	}
 	err = context.createDoc()
+	if err != nil {
+		return err
+	}
+	err = context.createTemplate()
 	if err != nil {
 		return err
 	}
@@ -171,5 +212,19 @@ func RanderTemplate(path, packageName string) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func Stamp(path string, out api.MigrateOut) error{
+	dir, err := ioutil.ReadDir(path)
+	if err != nil {
+		return err
+	}
+	context, err := createRanderContext(dir, path, "packageName", out)
+	if err != nil {
+		return err
+	}
+	context.out.Infof("Stamp test_migration version:\n")
+	printVersion(context)
 	return nil
 }

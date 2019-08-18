@@ -10,6 +10,10 @@ require (
 	github.com/huandu/xstrings v1.2.0 // indirect
 	github.com/imdario/mergo v0.3.7 // indirect
 	github.com/jinzhu/gorm v1.9.10
+	github.com/jteeuwen/go-bindata v3.0.7+incompatible // indirect
 	github.com/kr/pretty v0.1.0 // indirect
+	github.com/pkg/errors v0.8.0
+	github.com/spf13/cobra v0.0.5
+	github.com/spf13/pflag v1.0.3
 	gopkg.in/yaml.v2 v2.2.2
 )

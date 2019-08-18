@@ -8,6 +8,7 @@ import (
 	"github.com/nonetheless/gorm-migrate/pkg/rander"
 	"reflect"
 	"strings"
+	"time"
 )
 
 type Migrate struct {
@@ -18,12 +19,13 @@ type Migrate struct {
 	rollbackFlag bool
 	packageName  string
 	dirPath      string
+	cmdOut       api.MigrateOut
 }
 
 func NewMigration(db *gorm.DB, migrateList *list.List) (api.MigrateController, error) {
-	//TODO: create var
 	version := GormVersion{}
-	err := db.First(version).Error
+	db.CreateTable(GormVersion{})
+	err := db.First(&version).Error
 	var dbVersion *list.Element;
 	if err == nil {
 		point := migrateList.Front()
@@ -40,6 +42,9 @@ func NewMigration(db *gorm.DB, migrateList *list.List) (api.MigrateController, e
 			}
 		}
 	}
+	if dbVersion == nil && version.Version != "" {
+		return nil, fmt.Errorf("test_migration can't find db test_migration version:%v", version.Version)
+	}
 	migrate := Migrate{
 		migrateList: migrateList,
 		db:          db,
@@ -48,18 +53,18 @@ func NewMigration(db *gorm.DB, migrateList *list.List) (api.MigrateController, e
 	return &migrate, nil
 }
 
-func NewMigrationToInit() (api.MigrateController, error){
+func NewMigrationToInit() (api.MigrateController, error) {
 	migrate := Migrate{
 	}
 	return &migrate, nil
 }
 
 func (mig *Migrate) Migrate(opts ...api.Option) error {
-	for _, opt := range opts{
+	for _, opt := range opts {
 		opt(mig)
 	}
 
-	err := rander.RanderTemplate(mig.dirPath, mig.packageName)
+	err := rander.RanderTemplate(mig.dirPath, mig.packageName, mig.cmdOut)
 	if err != nil {
 		return err
 	}
@@ -72,10 +77,13 @@ func (mig *Migrate) Upgrade(opts ...api.Option) (err error) {
 	}
 	if mig.dbVersion == nil {
 		head := mig.migrateList.Front() //null
-		mig.dbVersion = head.Next()
+		mig.dbVersion = head
 	}
 	if mig.now == nil {
-		mig.now = mig.dbVersion
+		mig.now = mig.dbVersion.Next()
+	}
+	if task, ok := mig.now.Value.(api.MigrateInterface); ok {
+		mig.cmdOut.Infof("Upgrade from version:%v \n", task.PreVersion())
 	}
 	back := mig.migrateList.Back() //null
 	for {
@@ -91,6 +99,7 @@ func (mig *Migrate) Upgrade(opts ...api.Option) (err error) {
 			}
 			mig.now = mig.now.Next()
 			mig.updateVersion(task.Version())
+			task.Printf(mig.cmdOut)
 		} else {
 			objType := reflect.TypeOf(mig.now.Value)
 			return fmt.Errorf("Migration task can't change to MigrateInterface: %v", objType.Name())
@@ -143,6 +152,14 @@ func (mig *Migrate) Downgrade(opts ...api.Option) (err error) {
 	return nil
 }
 
+func (mig *Migrate) Stamp(opts ...api.Option) error {
+	for _, opt := range opts {
+		opt(mig)
+	}
+	err := rander.Stamp(mig.dirPath, mig.cmdOut)
+	return err
+}
+
 func rollbackFlag(migInterface api.MigrateController) {
 	migrate, ok := migInterface.(*Migrate)
 	if ok {
@@ -159,6 +176,15 @@ func WithPackageName(packageName string) api.Option {
 	}
 }
 
+func WithCmdOut(out api.MigrateOut) api.Option {
+	return func(migInterface api.MigrateController) {
+		migrate, ok := migInterface.(*Migrate)
+		if ok {
+			migrate.cmdOut = out
+		}
+	}
+}
+
 func WithDirPath(dirName string) api.Option {
 	return func(migInterface api.MigrateController) {
 		migrate, ok := migInterface.(*Migrate)
@@ -170,18 +196,21 @@ func WithDirPath(dirName string) api.Option {
 
 func (mig *Migrate) updateVersion(version string) error {
 	versionNow := GormVersion{}
-	err := mig.db.First(versionNow).Error
-	if err != nil {
+	err := mig.db.First(&versionNow).Error
+	if err == nil {
 		//update
 		versionNow.Version = version
-		err = mig.db.Save(versionNow).Error
+		versionNow.UpdatedAt = time.Now()
+		err = mig.db.Save(&versionNow).Error
 		if err != nil {
 			return err
 		}
 	} else {
 		//create
 		versionNow.Version = version
-		err = mig.db.Create(versionNow).Error
+		versionNow.UpdatedAt = time.Now()
+		versionNow.CreatedAt = time.Now()
+		err = mig.db.Create(&versionNow).Error
 		if err != nil {
 			return err
 		}

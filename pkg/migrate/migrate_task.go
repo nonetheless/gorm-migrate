@@ -46,3 +46,11 @@ func (v *MigrateVersion) Version() string {
 func (v *MigrateVersion) PreVersion() string {
 	return v.PreVersionValue
 }
+
+func (v *MigrateVersion) Printf(out api.MigrateOut){
+	tempVersion := v.PreVersion()
+	if tempVersion == "" {
+		tempVersion = "            "
+	}
+	out.Infof(tempVersion + "   --------->     " + v.Version() + "\n")
+}

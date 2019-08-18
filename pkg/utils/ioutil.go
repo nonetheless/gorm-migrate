@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/nonetheless/gorm-migrate/asset"
 	"io"
 	"io/ioutil"
 	"os"
@@ -8,14 +9,14 @@ import (
 	"runtime"
 )
 
-func getTemplateDirPath() string{
+func getTemplateDirPath() string {
 	if _, fileNameWithPath, _, ok := runtime.Caller(1); ok {
 		return fileNameWithPath + "/../template"
 	}
 	return ""
 }
 
-func ReadOrCreate(path string) ([]os.FileInfo, error){
+func ReadOrCreate(path string) ([]os.FileInfo, error) {
 	dir, err := ioutil.ReadDir(path)
 	if err != nil {
 		err := os.MkdirAll(path, os.ModePerm)
@@ -46,4 +47,13 @@ func WriteTemplate(outputFile string, writeFunc func(writer io.Writer) error) er
 		return err
 	}
 	return nil
+}
+
+func AssetTemplate(path string) ([]byte, error) {
+	data, err := asset.Asset(path)
+	if err != nil {
+		// Asset was not found.
+		return nil, err
+	}
+	return data, nil
 }
