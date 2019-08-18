@@ -3,12 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cc04c4fd-d5d1-46fc-ba15-c7bd97e80c0c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/api.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/migrate/migrate_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/migrate/migrate_controller.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/migrate/migrate_task.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/migrate/migrate_task.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/rander/rander.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/rander/rander.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_migration/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/test_migration/init.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_migration/migrate_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/test_migration/migrate_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
