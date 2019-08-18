@@ -2,9 +2,9 @@
 A codegen tool to generate gorm versiond migration code, you can create a gorm migration with gorm-migrate client, and you can use the migration code by import it.
 
 ## Migrate codegen tool
-### Download binary
+### Download binary and build 
 ```bash
-
+go build gorm-migrate.go
 ```
 ### Install 
 To install the library and command line program, use the following:
