@@ -4,9 +4,15 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/nonetheless/gorm-migrate/asset"
 	"github.com/nonetheless/gorm-migrate/pkg/migrate"
 	"testing"
 )
+
+func TestAsset(t *testing.T){
+	bytes, _ := asset.Asset("template/doc.gotmpl")
+	fmt.Println(string(bytes))
+}
 
 func TestDownGrade(t *testing.T){
 	db, err := gorm.Open("mysql", "root:66166161@tcp(127.0.0.1:3306)/demo?charset=utf8&parseTime=True")
