@@ -50,7 +50,7 @@ func testUpgrade(t *testing.T) {
 }
 
 func TestUpgradeDownGrade(t *testing.T){
-	t.Run("TestUpgradeDownGrade",TestUpgradeDownGrade)
+	t.Run("TestUpgradeDownGrade",testUpgrade)
 	t.Run("testDownGrade",testDownGrade)
 
 }
