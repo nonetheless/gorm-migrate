@@ -2,16 +2,17 @@
 A codegen tool to generate gorm versiond migration code, you can create a gorm migration with gorm-migrate client, and you can use the migration code by import it.
 
 ## Migrate codegen tool
-### Install with curl
+### Download binary
 ```bash
 
 ```
-### Install and build
+### Install 
+To install the library and command line program, use the following:
 ```bash
-go get -u github.com/nonetheless/gorm-migrate
+GO111MODULE=off; go get github.com/nonetheless/gorm-migrate/...
 ```
 
-### Create a migration and create a new version
+### Usage
 You can easily use this tool to create you gorm migration
 ```bash
 gorm-migrate 
@@ -45,7 +46,7 @@ gorm-migrate stamp -d $DIR
 
 ```
 ## Use Migration 
-### Write your own version migration function
+### Code migrate Demo
 With the tool you can get the code template like:
 ```go
 func run(db *gorm.DB) error {
@@ -60,7 +61,7 @@ func rollBack(db *gorm.DB) error {
 ```
 You must write your own migration function with gorm.DB
 
-### How to use your migration
+### Usage Example
 You can use your migration code with import code, this is a upgrade database example:
 ```go
 pacakge main
