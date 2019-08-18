@@ -7,11 +7,7 @@ import (
 	mig "github.com/nonetheless/gorm-migrate/pkg/migrate"
 	param "github.com/nonetheless/gorm-migrate/test_migration/param"
 	_ "github.com/nonetheless/gorm-migrate/test_migration/xlq9lndwjv9j"
-	_ "github.com/nonetheless/gorm-migrate/test_migration/phma9g1znhpm"
-	_ "github.com/nonetheless/gorm-migrate/test_migration/p1buif9wgmig"
-	_ "github.com/nonetheless/gorm-migrate/test_migration/v3c06skwrur9"
-	_ "github.com/nonetheless/gorm-migrate/test_migration/r8tzdglxapku"
-)
+	_ "github.com/nonetheless/gorm-migrate/test_migration/phma9g1znhpm")
 
 func CreateMigration(db *gorm.DB) (api.MigrateController, error){
 	migList := list.New()
@@ -29,7 +25,7 @@ func CreateMigration(db *gorm.DB) (api.MigrateController, error){
 		}
 	}
 	migrate, err:= mig.NewMigration(db, migList)
-	if err == nil{
+	if err != nil{
 		return nil ,err
 	}
 	return migrate, nil

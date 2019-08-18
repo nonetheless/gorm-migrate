@@ -27,7 +27,7 @@ func CreateMigration(db *gorm.DB) (api.MigrateController, error){
 		}
 	}
 	migrate, err:= mig.NewMigration(db, migList)
-	if err == nil{
+	if err != nil{
 		return nil ,err
 	}
 	return migrate, nil

@@ -14,7 +14,7 @@ func TestAsset(t *testing.T){
 	fmt.Println(string(bytes))
 }
 
-func TestDownGrade(t *testing.T){
+func testDownGrade(t *testing.T){
 	db, err := gorm.Open("mysql", "root:66166161@tcp(127.0.0.1:3306)/demo?charset=utf8&parseTime=True")
 	if err != nil {
 		t.Fatal(err)
@@ -31,7 +31,7 @@ func TestDownGrade(t *testing.T){
 	}
 }
 
-func TestUpgrade(t *testing.T) {
+func testUpgrade(t *testing.T) {
 	db, err := gorm.Open("mysql", "root:66166161@tcp(127.0.0.1:3306)/demo?charset=utf8&parseTime=True")
 	if err != nil {
 		t.Fatal(err)
@@ -46,6 +46,12 @@ func TestUpgrade(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+}
+
+func TestUpgradeDownGrade(t *testing.T){
+	t.Run("TestUpgradeDownGrade",TestUpgradeDownGrade)
+	t.Run("testDownGrade",testDownGrade)
 
 }
 
