@@ -2,24 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cc04c4fd-d5d1-46fc-ba15-c7bd97e80c0c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmd/cmd.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmd/downgrade.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmd/migrate.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmd/stamp.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cmd/upgrade.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gmigrate.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_migration/migrate_test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/api.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/migrate/migrate_controller.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/migrate/migrate_controller.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/migrate/migrate_task.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/migrate/migrate_task.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/rander/rander.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/rander/rander.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/utils/ioutil.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/utils/ioutil.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/template/doc.gotmpl" beforeDir="false" afterPath="$PROJECT_DIR$/template/doc.gotmpl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_migration/init.go" beforeDir="false" afterPath="$PROJECT_DIR$/test_migration/init.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_migration/migrate_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/test_migration/migrate_test.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -77,7 +66,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Test.TestUpgrade in github.com/nonetheless/gorm-migrate/migration">
+  <component name="RunManager" selected="Go Test.TestDownGrade in github.com/nonetheless/gorm-migrate/test_migration">
     <configuration name="go build github.com/nonetheless/gorm-migrate" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="gorm-migrate" />
       <working_directory value="$PROJECT_DIR$" />
@@ -86,6 +75,17 @@
       <filePath value="$PROJECT_DIR$/main.go" />
       <package value="github.com/nonetheless/gorm-migrate" />
       <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestDownGrade in github.com/nonetheless/gorm-migrate/test_migration" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="gorm-migrate" />
+      <working_directory value="$PROJECT_DIR$/test_migration" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/nonetheless/gorm-migrate/test_migration" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestDownGrade$" />
       <method v="2" />
     </configuration>
     <configuration name="TestUpgrade in github.com/nonetheless/gorm-migrate/migration" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -99,12 +99,27 @@
       <pattern value="^TestUpgrade$" />
       <method v="2" />
     </configuration>
+    <configuration name="TestUpgrade in github.com/nonetheless/gorm-migrate/test_migration" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="gorm-migrate" />
+      <working_directory value="$PROJECT_DIR$/test_migration" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/nonetheless/gorm-migrate/test_migration" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestUpgrade$" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Go Build.go build github.com/nonetheless/gorm-migrate" />
       <item itemvalue="Go Test.TestUpgrade in github.com/nonetheless/gorm-migrate/migration" />
+      <item itemvalue="Go Test.TestUpgrade in github.com/nonetheless/gorm-migrate/test_migration" />
+      <item itemvalue="Go Test.TestDownGrade in github.com/nonetheless/gorm-migrate/test_migration" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.TestDownGrade in github.com/nonetheless/gorm-migrate/test_migration" />
+        <item itemvalue="Go Test.TestUpgrade in github.com/nonetheless/gorm-migrate/test_migration" />
         <item itemvalue="Go Test.TestUpgrade in github.com/nonetheless/gorm-migrate/migration" />
         <item itemvalue="Go Build.go build github.com/nonetheless/gorm-migrate" />
       </list>
@@ -135,6 +150,21 @@
           <url>file://$PROJECT_DIR$/cmd/stamp.go</url>
           <line>28</line>
           <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/migrate/migrate_controller.go</url>
+          <line>115</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/test_migration/migrate_test.go</url>
+          <line>38</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/test_migration/migrate_test.go</url>
+          <line>21</line>
+          <option name="timeStamp" value="30" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

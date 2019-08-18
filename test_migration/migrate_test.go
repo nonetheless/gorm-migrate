@@ -8,6 +8,22 @@ import (
 	"testing"
 )
 
+func TestDownGrade(t *testing.T){
+	db, err := gorm.Open("mysql", "root:66166161@tcp(127.0.0.1:3306)/demo?charset=utf8&parseTime=True")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer db.Close()
+	update, err:= CreateMigration(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	testCmdOut := TestCmd{}
+	err = update.Downgrade(migrate.WithCmdOut(&testCmdOut))
+	if err != nil {
+		t.Fatal(err)
+	}
+}
 
 func TestUpgrade(t *testing.T) {
 	db, err := gorm.Open("mysql", "root:66166161@tcp(127.0.0.1:3306)/demo?charset=utf8&parseTime=True")
@@ -15,9 +31,16 @@ func TestUpgrade(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer db.Close()
-	update := CreateMigration(db)
+	update, err:= CreateMigration(db)
+	if err != nil {
+		t.Fatal(err)
+	}
 	testCmdOut := TestCmd{}
-	update.Upgrade(migrate.WithCmdOut(&testCmdOut))
+	err = update.Upgrade(migrate.WithCmdOut(&testCmdOut))
+	if err != nil {
+		t.Fatal(err)
+	}
+
 }
 
 type TestCmd struct {

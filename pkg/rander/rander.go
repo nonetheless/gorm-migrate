@@ -28,6 +28,14 @@ func (v *VersionTemplate) Printf(out api.MigrateOut){
 	out.Infof(tempVersion + "   --------->     " + v.Version + "\n")
 }
 
+func (v *VersionTemplate) RPrintf(out api.MigrateOut){
+	tempVersion := v.PreVersion
+	if tempVersion == "" {
+		tempVersion = "            "
+	}
+	out.Infof(tempVersion + "   <---------     " + v.Version + "\n")
+}
+
 type VersionTemplateContext struct {
 	VersionTemps VersionTemplates
 	dirPath      string

@@ -29,5 +29,6 @@ type MigrateOut interface {
 
 type Printer interface {
 	Printf(MigrateOut)
+	RPrintf(out MigrateOut)
 }
 

@@ -54,3 +54,11 @@ func (v *MigrateVersion) Printf(out api.MigrateOut){
 	}
 	out.Infof(tempVersion + "   --------->     " + v.Version() + "\n")
 }
+
+func (v *MigrateVersion) RPrintf(out api.MigrateOut){
+	tempVersion := v.PreVersion()
+	if tempVersion == "" {
+		tempVersion = "            "
+	}
+	out.Infof(tempVersion + "   <---------     " + v.Version() + "\n")
+}

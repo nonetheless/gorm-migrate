@@ -5,20 +5,21 @@ import (
 	"github.com/jinzhu/gorm"
 	api "github.com/nonetheless/gorm-migrate/pkg"
 	mig "github.com/nonetheless/gorm-migrate/pkg/migrate"
-	param "github.com/nonetheless/gorm-migrate/test_migration/param"
-	_ "github.com/nonetheless/gorm-migrate/test_migration/xlq9lndwjv9j"
-	_ "github.com/nonetheless/gorm-migrate/test_migration/phma9g1znhpm"
 	_ "github.com/nonetheless/gorm-migrate/test_migration/p1buif9wgmig"
+	"github.com/nonetheless/gorm-migrate/test_migration/param"
+	_ "github.com/nonetheless/gorm-migrate/test_migration/phma9g1znhpm"
+	_ "github.com/nonetheless/gorm-migrate/test_migration/v3c06skwrur9"
+	_ "github.com/nonetheless/gorm-migrate/test_migration/xlq9lndwjv9j"
 )
 
-func CreateMigration(db *gorm.DB) api.MigrateController{
+func CreateMigration(db *gorm.DB) (api.MigrateController, error) {
 	migList := list.New()
 	migList.PushFront(nil)
 	migList.PushBack(nil)
 	head := migList.Front()
 	version := ""
-	for{
-		if mig,ok := param.MigrateMap[version];ok{
+	for {
+		if mig, ok := param.MigrateMap[version]; ok {
 			version = mig.Version()
 			migList.InsertAfter(mig, head)
 			head = head.Next()
@@ -26,10 +27,10 @@ func CreateMigration(db *gorm.DB) api.MigrateController{
 			break
 		}
 	}
-	migrate, err:= mig.NewMigration(db, migList)
-	if err != nil{
-		panic(err)
+	migrate, err := mig.NewMigration(db, migList)
+	if err != nil {
+		return nil, err
 	}
-	return migrate
+	return migrate, nil
 
 }

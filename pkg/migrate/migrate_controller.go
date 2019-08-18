@@ -120,11 +120,11 @@ func (mig *Migrate) Downgrade(opts ...api.Option) (err error) {
 	}
 	if mig.dbVersion == nil {
 		head := mig.migrateList.Front() //null
-		mig.dbVersion = head.Next()
+		mig.dbVersion = head
 	}
 
 	if mig.now == nil {
-		mig.now = mig.dbVersion
+		mig.now = mig.dbVersion.Next()
 	}
 	head := mig.migrateList.Front()
 	if mig.now.Prev() == head {
@@ -143,7 +143,9 @@ func (mig *Migrate) Downgrade(opts ...api.Option) (err error) {
 				}
 			}
 			mig.now = mig.now.Prev()
-			mig.updateVersion(task.Version())
+			mig.updateVersion(task.PreVersion())
+			mig.cmdOut.Infof("DownGrade from version: \n")
+			task.RPrintf(mig.cmdOut)
 		} else {
 			objType := reflect.TypeOf(mig.now.Value)
 			return fmt.Errorf("Migration task can't change to MigrateInterface: %v", objType.Name())
