@@ -11,7 +11,7 @@ import (
 	{{- end }}
 )
 
-func CreateMigration(db *gorm.DB) api.MigrateController{
+func CreateMigration(db *gorm.DB) (api.MigrateController, error){
 	migList := list.New()
 	migList.PushFront(nil)
 	migList.PushBack(nil)
@@ -28,8 +28,8 @@ func CreateMigration(db *gorm.DB) api.MigrateController{
 	}
 	migrate, err:= mig.NewMigration(db, migList)
 	if err == nil{
-		panic(err)
+		return nil ,err
 	}
-	return migrate
+	return migrate, nil
 
 }
