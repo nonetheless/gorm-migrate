@@ -9,14 +9,14 @@ go build gorm-migrate.go
 ### Install 
 To install the library and command line program, use the following:
 ```bash
-GO111MODULE=off; go get github.com/nonetheless/gorm-migrate/...
+GO111MODULE=off; go get -u github.com/nonetheless/gorm-migrate/...
 ```
 
 ### Usage
-You can easily use this tool to create you gorm migration
+You can easily use this tool to create your gorm migration
 ```bash
 gorm-migrate 
-The Migrate generator for Gorm.
+The migrate generator for Gorm.
 
 Usage:
   gmigrate [command]
@@ -47,7 +47,7 @@ gorm-migrate stamp -d $DIR
 ```
 ## Use Migration 
 ### Code migrate Demo
-With the tool you can get the code template like:
+With the tool you can get the code template:
 ```go
 func run(db *gorm.DB) error {
 	//TODO add version update sql
@@ -62,7 +62,7 @@ func rollBack(db *gorm.DB) error {
 You must write your own migration function with gorm.DB
 
 ### Usage Example
-You can use your migration code with import code, this is a upgrade database example:
+You can use your migration code with import code, it's a upgrade database example:
 ```go
 pacakge main
 // main.go
@@ -86,8 +86,20 @@ func main(){
     		t.Fatal(err)
     	}
 }
-
-
-
 ```
-
+## Deploy 
+### Build
+Build binary client:
+```bash
+go build gorm-migrate.go
+```
+### Test
+Test asset, upgrade and downgrade function
+```bash
+go test ./...
+```
+### Template
+This project use go-bindata to store template, when you change template you must run :
+```bash
+go-bindata -o asset/asset.go -pkg=asset template/...
+```
