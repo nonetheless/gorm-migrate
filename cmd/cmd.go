@@ -49,12 +49,12 @@ func (cmdOut *CmdOut) Errorf(info string, opts ...interface{}) {
 	cmdOut.out.Write([]byte(infoString))
 }
 
-func (cmdOut *CmdOut) Infoln(info string) {
+func (cmdOut *CmdOut) Infoln(info string,opts ...interface{}) {
 	cmdOut.out.Write([]byte("[INFO] "))
 	cmdOut.out.Write([]byte(info + "\n"))
 }
 
-func (cmdOut *CmdOut) Errorln(info string) {
+func (cmdOut *CmdOut) Errorln(info string,opts ...interface{}) {
 	cmdOut.out.Write([]byte("[ERROR] "))
 	cmdOut.out.Write([]byte(info+"\n"))
 }
