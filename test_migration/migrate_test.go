@@ -68,9 +68,9 @@ func (t *TestCmd) Errorf(info string, opts ...interface{}){
 }
 
 func (t *TestCmd) Infoln(opts ...interface{}){
-	fmt.Println(opts)
+	fmt.Println(opts...)
 }
 
 func (t *TestCmd) Errorln(opts ...interface{}){
-	fmt.Println(opts)
+	fmt.Println(opts...)
 }
