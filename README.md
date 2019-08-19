@@ -87,7 +87,7 @@ func main(){
     	}
 }
 ```
-## Deploy 
+## Development 
 ### Build
 Build binary client:
 ```bash
