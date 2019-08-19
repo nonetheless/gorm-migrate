@@ -67,10 +67,10 @@ func (t *TestCmd) Errorf(info string, opts ...interface{}){
 	fmt.Printf(info, opts...)
 }
 
-func (t *TestCmd) Infoln(info string, opts ...interface{}){
-	fmt.Println(info)
+func (t *TestCmd) Infoln(opts ...interface{}){
+	fmt.Println(opts)
 }
 
-func (t *TestCmd) Errorln(info string, opts ...interface{}){
-	fmt.Println(info)
+func (t *TestCmd) Errorln(opts ...interface{}){
+	fmt.Println(opts)
 }

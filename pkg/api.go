@@ -20,8 +20,8 @@ type MigrateController interface {
 }
 
 type MigrateOut interface {
-	Infoln(string, ...interface{})
-	Errorln(string, ...interface{})
+	Infoln(...interface{})
+	Errorln(...interface{})
 	Infof(string, ...interface{})
 	Errorf(string, ...interface{})
 
