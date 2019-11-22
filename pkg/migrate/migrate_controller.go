@@ -171,6 +171,13 @@ func (mig *Migrate) downgrade() error {
 			}
 			task.RPrintf(mig.cmdOut)
 			if task.Version() == mig.destVersion {
+				version := GormVersion{}
+				err := mig.db.Model(GormVersion{}).First(&version).Error
+				if err != nil {
+					return err
+				}
+				version.Version = mig.destVersion
+				mig.db.Save(&version)
 				break
 			}
 			mig.now = mig.now.Prev()
