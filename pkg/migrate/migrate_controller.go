@@ -20,6 +20,7 @@ type Migrate struct {
 	packageName  string
 	dirPath      string
 	cmdOut       api.MigrateOut
+	destVersion  string
 }
 
 func NewMigration(db *gorm.DB, migrateList *list.List) (api.MigrateController, error) {
@@ -113,6 +114,13 @@ func (mig *Migrate) Downgrade(opts ...api.Option) (err error) {
 	for _, opt := range opts {
 		opt(mig)
 	}
+	if mig.destVersion == "" {
+		return mig.rollbackDowngrade()
+	}
+	return mig.downgrade()
+}
+
+func (mig *Migrate) rollbackDowngrade() (err error) {
 	apiCall := true
 	if mig.rollbackFlag == true {
 		mig.rollbackFlag = false
@@ -149,6 +157,23 @@ func (mig *Migrate) Downgrade(opts ...api.Option) (err error) {
 		} else {
 			objType := reflect.TypeOf(mig.now.Value)
 			return fmt.Errorf("Migration task can't change to MigrateInterface: %v", objType.Name())
+		}
+	}
+	return nil
+}
+
+func (mig *Migrate) downgrade() error {
+	for {
+		if task, ok := mig.now.Value.(api.MigrateInterface); ok {
+			err := task.RollBack(mig.db)
+			if err != nil {
+				fmt.Errorf("downgrade error,version:%s, error: %v", task.Version(), err)
+			}
+			task.RPrintf(mig.cmdOut)
+			if task.Version() == mig.destVersion {
+				break
+			}
+			mig.now = mig.now.Prev()
 		}
 	}
 	return nil
@@ -192,6 +217,24 @@ func WithDirPath(dirName string) api.Option {
 		migrate, ok := migInterface.(*Migrate)
 		if ok {
 			migrate.dirPath = dirName
+		}
+	}
+}
+
+func WithHeadToEnd() api.Option {
+	return func(migInterface api.MigrateController) {
+		migrate, ok := migInterface.(*Migrate)
+		if ok {
+			migrate.now = migrate.migrateList.Back()
+		}
+	}
+}
+
+func WithDestVersion(version string) api.Option {
+	return func(migInterface api.MigrateController) {
+		migrate, ok := migInterface.(*Migrate)
+		if ok {
+			migrate.destVersion = version
 		}
 	}
 }
