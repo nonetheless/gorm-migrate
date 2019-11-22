@@ -221,11 +221,44 @@ func WithDirPath(dirName string) api.Option {
 	}
 }
 
-func WithHeadToEnd() api.Option {
+func WithHeadDefault() api.Option {
 	return func(migInterface api.MigrateController) {
 		migrate, ok := migInterface.(*Migrate)
 		if ok {
-			migrate.now = migrate.migrateList.Back()
+			migrate.now = migrate.migrateList.Back().Prev()
+		}
+	}
+}
+
+func WithHeadFrom(version string) api.Option {
+	return func(migInterface api.MigrateController) {
+		migrate, ok := migInterface.(*Migrate)
+		if ok {
+			now := migrate.migrateList.Back().Prev()
+			for {
+				if task, ok := now.Value.(api.MigrateInterface); ok {
+					if task.Version() == version {
+						migrate.now = now
+						break
+					} else {
+						now = now.Prev()
+					}
+				}
+			}
+			if migrate.now == migrate.migrateList.Front() {
+				panic(fmt.Sprintf("can't set this version to head: %s", version))
+			}
+		}
+	}
+}
+
+func WithDestPreOne() api.Option {
+	return func(migInterface api.MigrateController) {
+		migrate, ok := migInterface.(*Migrate)
+		if ok {
+			if task, ok := migrate.migrateList.Back().Prev().Value.(api.MigrateInterface); ok {
+				migrate.destVersion = task.Version()
+			}
 		}
 	}
 }
