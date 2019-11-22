@@ -319,3 +319,12 @@ func (mig *Migrate) rollback() (err error) {
 	}
 	return nil
 }
+
+func (mig *Migrate)GetDbVersion(opts ...api.Option) string {
+	version := GormVersion{}
+	err := mig.db.First(&version).Error
+	if err != nil{
+		return ""
+	}
+	return version.Version
+}

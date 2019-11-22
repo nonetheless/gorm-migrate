@@ -17,6 +17,7 @@ type MigrateController interface {
 	Upgrade(...Option) error
 	Downgrade(...Option) error
 	Stamp(...Option) error
+	GetDbVersion(...Option) string
 }
 
 type MigrateOut interface {
