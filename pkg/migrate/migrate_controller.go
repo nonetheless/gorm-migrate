@@ -176,7 +176,7 @@ func (mig *Migrate) downgrade() error {
 				if err != nil {
 					return err
 				}
-				version.Version = mig.destVersion
+				version.Version = task.PreVersion()
 				mig.db.Save(&version)
 				break
 			}
